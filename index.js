@@ -16,7 +16,7 @@ const PAGE_NUMBER_POSITION = { X: 34.103, Y: 1.188 };
 
 const ADDRESS_X_POS = { 8.156: true, 8.219: true };
 
-const BANK_DETAILS_KEYS = ["institutionNumber", "MICR", "address"];
+const BANK_DETAILS_KEYS = ["routingNumber", "micr", "address"];
 
 // get text array with more than two spaces
 function  getTextArrayWithMoreThanTwoSpaces(str){
@@ -103,7 +103,7 @@ function readPDFPages(fileName) {
                 createAddressObject(`${addressTextValue} ${item.text}`);
             }else{
               //create new institution branch details object and add to the institutions array
-              institutions.push({ bankName: institutionNameCodeArr[0] });
+              institutions.push({ institutionName: institutionNameCodeArr[0] });
               itemKeyIndex = 0;
               institutions[institutions.length - 1][BANK_DETAILS_KEYS[itemKeyIndex++]] = item.text;
             }  
@@ -143,3 +143,4 @@ function writeToJson(data , fileName) {
 // pass file names
 readPDFPages("banks.pdf").then((data) => writeToJson(data,"banks.json"));
 readPDFPages("creditunions.pdf").then((data) => writeToJson(data,"creditunions.json"));
+readPDFPages("trustcompanies.pdf").then((data) => writeToJson(data,"trustcompanies.json"));
