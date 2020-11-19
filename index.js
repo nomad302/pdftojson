@@ -10,6 +10,11 @@ const IGNORE_FIELDS = {
   "Postal Address - Addresse postale": true,
   "SECTION I NUMERIC LIST / LISTE NUMÉRIQUE": true,
   "SECTION I NUMERIC LIST MEMBERS / LISTE NUMÉRIQUE DES MEMBRES": true,
+  "SECTION I NUMERIC LIST NON-MEMBERS / LISTE NUMÉRIQUE DES NON-MEMBRES" : true,
+  "SECTION I NUMERIC LIST MEMBERS/ LISTE NUMÉRIQUE DES MEMBRES":true,
+  "SECTION I NUMERIC LIST NON-":true,
+  "MEMBERS / LISTE NUMÉRIQUE DES":true,
+  "NON-MEMBRES": true
 };
 
 const PAGE_NUMBER_POSITION = { X: 34.103, Y: 1.188 };
@@ -21,6 +26,11 @@ const BANK_DETAILS_KEYS = ["routingNumber", "micr", "address"];
 // get text array with more than two spaces
 function  getTextArrayWithMoreThanTwoSpaces(str){
   return str.match(/\s\s{2}/g)
+}
+
+// is micr 
+function isMicr(str){
+  return str.match(/\d{5}\-\d{3}/);
 }
 
 // get bank name and code array 
@@ -101,7 +111,7 @@ function readPDFPages(fileName) {
             if(ADDRESS_X_POS[item.x]){
               institutions[institutions.length - 1][BANK_DETAILS_KEYS[BANK_DETAILS_KEYS.length - 1]] = 
                 createAddressObject(`${addressTextValue} ${item.text}`);
-            }else{
+            } else{
               //create new institution branch details object and add to the institutions array
               institutions.push({ institutionName: institutionNameCodeArr[0] });
               itemKeyIndex = 0;
@@ -112,6 +122,10 @@ function readPDFPages(fileName) {
           else {
             let itemTextValue = item.text;
             // create address object using address text
+             // micr validation
+              if(itemKeyIndex === 1 && !isMicr(itemTextValue)){
+                itemKeyIndex++;
+              }
               if (itemKeyIndex === BANK_DETAILS_KEYS.indexOf('address')) {
                 addressTextValue = itemTextValue;
                 itemTextValue = createAddressObject(itemTextValue);
